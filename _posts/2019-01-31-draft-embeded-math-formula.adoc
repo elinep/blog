@@ -6,6 +6,7 @@
 :stem: latexmath
 
 stem:[x^2 - y^2 = (x + y)(x - y)]
+stem:[Y = f(X,W)]
 
 comments :
 ":stem: latexmath" header enables formula interpretation
