@@ -3,6 +3,10 @@
 :hp-tags: HubPress, Blog, Open_Source,
 :hp-alt-title: nn_training_basics
 :stem: latexmath
+// default image ressource for local edition
+:imgdir: ./../images/2017-06-12-neural_networks_training_basics
+// uncomment for web publication
+:imgdir: 2017-06-12-neural_networks_training_basics
 
 = Neural Networks Training : basic concepts
 
@@ -18,7 +22,7 @@ that this post freshly written after having watched the video can help.
 OK first, what kind of beast a neural network is and what’s its purpose. Well it’s just a giant function that process some input based on some parameters to compute some output.
 
 .Abstract view of a neural network
-image::fig1.png[align="center"]
+image::{imgdir}/fig1.png[align="center"]
 
 So basically you present to your network some input data (images, numbers, text) and it generates an ouput (images, numbers, text) by computing
 stem:[Y = f(X,W)]
@@ -55,7 +59,7 @@ Ok first we need to measure the error between an expected output and current oup
 This is called a loss function and it is added at the end of the network like this:
 
 .Loss function to compute error
-image::fig2.png[align="center"]
+image::{imgdir}/fig2.png[align="center"]
 
 The loss function should have several properties:
 
@@ -194,7 +198,7 @@ where stem:[\lambda] is a scalar parameter to control the size of your step
 Here is graphically what happens for few iterrations with stem:[\lambda=0.04]
 
 .Gradient descent iterations for a simple function - The red dot, is the initial position. The arrows represents the evaluation of the current gradient (the slope on each axis). The green path links the postion that have been tested by the algorithm. The surface is the loss function.
-image::fig_gradient_descent.png[align="center"]
+image::{imgdir}/fig_gradient_descent.png[align="center"]
 
 NOTE: When to stop the algorithm? Generally for neural networks training, you run it a fix number of times. It is one of your hyperparameter. In the same time you monitor that your error behave correctly (i.e. decreases)
 
@@ -243,7 +247,7 @@ with stem:[W \in \mathbb{R}^{N+1}]
 By chaining several layers of neurons, you obtain a neural network:
 
 .A neural network
-image::fig3.png[align="center"]
+image::{imgdir}/fig3.png[align="center"]
 
 Backward propagation is a recursive method to evaluate the gradient of
 the loss function (i.e. stem:[\frac{\partial L(Y,\tilde{Y})}{\partial W_i}])
@@ -256,7 +260,7 @@ The chain rule is a method to compute the derivative of the composition of two f
 Consider two functions stem:[y_f=f(x_f)], stem:[y_g=g(x_g)] and compose them to form a third one stem:[y=h(x)=g(f(x))]
 
 .Composition of two functions
-image::fig4.png[align="center"]
+image::{imgdir}/fig4.png[align="center"]
 
 Chain rule states:
 
@@ -339,7 +343,7 @@ the influence of the current neuron input on the final error. stem:[G_{X_i}] wil
 modify its output so that our output help to decrease the error.
 
 .Gradient flow inside a neuron
-image::fig5.png[align="center"]
+image::{imgdir}/fig5.png[align="center"]
 
 With the neuron definition we have seen, we obtain:
 
