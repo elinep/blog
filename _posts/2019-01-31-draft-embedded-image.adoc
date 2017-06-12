@@ -4,9 +4,9 @@
 :hp-tags: HubPress, Blog, Open_Source,
 :hp-alt-title: draft_embedded_image
 
-* the 2019-01-31-draft-embedded-image.adoc file of this post is pushed in _posts/
-* by convention a 2019-01-31-draft-embedded-image directory is created in images/
-* the image ressource for the post is placed in images/2019-01-31-draft-embedded-image/image.png
+* the 2019-01-31-draft-embeded_image.adoc file of this post is pushed in _posts/
+* by convention a 2019-01-31-draft-embeded_image directory is created in images/
+* the image ressource for the post is placed in images/2019-01-31-draft-embeded_image/image.png
 
 To display this image:
 
