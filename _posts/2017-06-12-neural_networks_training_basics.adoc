@@ -10,7 +10,8 @@
 
 = Neural Networks Training : basic concepts
 
-I rencently started to interest in neural networks appealled by all the magic articles/results that flowd the web.
+I rencently started to interest in neural networks appealled by all the magic
+articles/results that flood the web.
 When you see magic, you want to understand the trick. That’s my case.
 A great ressource to study this subject is the
 https://www.youtube.com/watch?v=yp9rwI_LZX8&list=PL16j5WbGpaM0_Tj8CRmurZ8Kk1gEBc7fg[Convolutional Neural Networks] course by standford.
