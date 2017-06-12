@@ -8,6 +8,6 @@
 * by convention a 2019-01-31-draft-embeded_image directory is created in images/
 * the image ressource for the post is placed in images/2019-01-31-draft-embeded_image/image.png
 
-To display this image:
+To display this image (it won't work in the online editor):
 
 image::images/2019-01-31-draft-embedded-image/image.png[align="center"]
