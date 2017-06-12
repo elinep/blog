@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Untitled RSS Feed]]></title><description><![CDATA[Untitled RSS Feed]]></description><link>https://elinep.github.io/blog</link><generator>RSS for Node</generator><lastBuildDate>Mon, 12 Jun 2017 14:52:07 GMT</lastBuildDate><atom:link href="https://elinep.github.io/blog/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[[Draft] Embedded image]]></title><description><![CDATA[<div class="ulist">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Untitled RSS Feed]]></title><description><![CDATA[Untitled RSS Feed]]></description><link>https://elinep.github.io/blog</link><generator>RSS for Node</generator><lastBuildDate>Mon, 12 Jun 2017 14:55:53 GMT</lastBuildDate><atom:link href="https://elinep.github.io/blog/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[[Draft] Embedded image]]></title><description><![CDATA[<div class="ulist">
 <ul>
 <li>
 <p>the 2019-01-31-draft-embeded_image.adoc file of this post is pushed in _posts/</p>
@@ -20,11 +20,19 @@
 </div>
 </div>
 <div class="paragraph">
-<p>To display this image (it won&#8217;t work in the online editor):</p>
+<p>It is also available through the blog URL:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://elinep.github.io/blog/images/2019-01-31-draft-embedded-image/image.png" alt="image.png">
+</div>
+</div>
+<div class="paragraph">
+<p>for relative access :</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="https://elinep.github.io/blog/images/images/2019-01-31-draft-embedded-image/image.png" alt="image.png">
+<img src="https://elinep.github.io/blog/images/image.png" alt="image.png">
 </div>
 </div>]]></description><link>https://elinep.github.io/blog/2019/01/31/draft-embedded-image.html</link><guid isPermaLink="true">https://elinep.github.io/blog/2019/01/31/draft-embedded-image.html</guid><category><![CDATA[HubPress]]></category><category><![CDATA[Blog]]></category><category><![CDATA[Open_Source]]></category><pubDate>Thu, 31 Jan 2019 00:00:00 GMT</pubDate></item><item><title><![CDATA[Neural Networks Training : basic concepts]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
