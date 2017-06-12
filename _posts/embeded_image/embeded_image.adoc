@@ -1,0 +1,8 @@
+= [Draft] Embeded image
+:hp-image: /covers/cover.png
+:published_at: 2019-01-31
+:hp-tags: HubPress, Blog, Open_Source,
+:hp-alt-title: draft_embeded_image
+
+
+image::fig1.png[align="center"]
