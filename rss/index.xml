@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Untitled RSS Feed]]></title><description><![CDATA[Untitled RSS Feed]]></description><link>https://elinep.github.io/blog</link><generator>RSS for Node</generator><lastBuildDate>Mon, 12 Jun 2017 14:50:27 GMT</lastBuildDate><atom:link href="https://elinep.github.io/blog/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[[Draft] Embedded image]]></title><description><![CDATA[<div class="ulist">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Untitled RSS Feed]]></title><description><![CDATA[Untitled RSS Feed]]></description><link>https://elinep.github.io/blog</link><generator>RSS for Node</generator><lastBuildDate>Mon, 12 Jun 2017 14:52:07 GMT</lastBuildDate><atom:link href="https://elinep.github.io/blog/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[[Draft] Embedded image]]></title><description><![CDATA[<div class="ulist">
 <ul>
 <li>
 <p>the 2019-01-31-draft-embeded_image.adoc file of this post is pushed in _posts/</p>
@@ -12,8 +12,12 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>Image is available through github repo browser :
-image::https://raw.githubusercontent.com/elinep/blog/gh-pages/images/2019-01-31-draft-embedded-image/image.png[]</p>
+<p>Image is available through github repo browser :</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://raw.githubusercontent.com/elinep/blog/gh-pages/images/2019-01-31-draft-embedded-image/image.png" alt="image.png">
+</div>
 </div>
 <div class="paragraph">
 <p>To display this image (it won&#8217;t work in the online editor):</p>
