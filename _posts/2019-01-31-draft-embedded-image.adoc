@@ -3,6 +3,7 @@
 :published_at: 2019-01-31
 :hp-tags: HubPress, Blog, Open_Source,
 :hp-alt-title: draft_embedded_image
+:images-dir: https://elinep.github.io/blog/images/2019-01-31-draft-embedded-image/
 
 * the 2019-01-31-draft-embeded_image.adoc file of this post is pushed in _posts/
 * by convention a 2019-01-31-draft-embeded_image directory is created in images/
@@ -12,6 +13,10 @@ Image is available through github repo browser :
 
 image::https://raw.githubusercontent.com/elinep/blog/gh-pages/images/2019-01-31-draft-embedded-image/image.png[]
 
-To display this image (it won't work in the online editor):
+It is also available through the blog URL:
 
-image::images/2019-01-31-draft-embedded-image/image.png[align="center"]
+image::https://elinep.github.io/blog/images/2019-01-31-draft-embedded-image/image.png[]
+
+for relative access :
+
+image::image.png[align="center"]
