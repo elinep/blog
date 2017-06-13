@@ -6,12 +6,12 @@
     "cname": ""
   },
   "theme": {
-    "name": "ichi"
+    "name": "ghostium"
   },
   "urls": {
     "site": "https://elinep.github.io/blog",
     "hubpress": "https://elinep.github.io/blog",
-    "theme": "//elinep.github.io/blog/themes/roon",
+    "theme": "//elinep.github.io/blog/themes/ichi",
     "images": "https://elinep.github.io/blog/images"
   },
   "initialisationConfigComponent": {
