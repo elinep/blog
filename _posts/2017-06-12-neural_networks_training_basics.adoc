@@ -1,12 +1,12 @@
 :published_at: 2017-06-12
-:hp-tags: HubPress, Blog, Open_Source,
+:hp-tags: Blog, Neural network
 :hp-alt-title: nn_training_basics
 :stem: latexmath
 // default image resource for local edition
 :imgdir: ./../images/2017-06-12-neural_networks_training_basics
 // uncomment for web publication
 :imgdir: 2017-06-12-neural_networks_training_basics
-:hp-image: {imgdir}/cover.jpg
+:hp-image: image/{imgdir}/cover.jpg
 
 
 = Neural Networks Training: basic concepts
