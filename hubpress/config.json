@@ -6,12 +6,12 @@
     "cname": ""
   },
   "theme": {
-    "name": "uno"
+    "name": "uno-zen"
   },
   "urls": {
     "site": "https://elinep.github.io/blog",
     "hubpress": "https://elinep.github.io/blog",
-    "theme": "//elinep.github.io/blog/themes/casper",
+    "theme": "//elinep.github.io/blog/themes/uno",
     "images": "https://elinep.github.io/blog/images"
   },
   "initialisationConfigComponent": {
