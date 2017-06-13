@@ -6,12 +6,12 @@
     "cname": ""
   },
   "theme": {
-    "name": "ghostium"
+    "name": "casper"
   },
   "urls": {
     "site": "https://elinep.github.io/blog",
     "hubpress": "https://elinep.github.io/blog",
-    "theme": "//elinep.github.io/blog/themes/ichi",
+    "theme": "//elinep.github.io/blog/themes/ghostium",
     "images": "https://elinep.github.io/blog/images"
   },
   "initialisationConfigComponent": {
