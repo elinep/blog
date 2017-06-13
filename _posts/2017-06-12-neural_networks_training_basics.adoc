@@ -6,7 +6,8 @@
 :imgdir: ./../images/2017-06-12-neural_networks_training_basics
 // uncomment for web publication
 :imgdir: 2017-06-12-neural_networks_training_basics
-:hp-image: image/{imgdir}/cover.jpg
+
+:hp-image: https://elinep.github.io/blog/images/2017-06-12-neural_networks_training_basics/cover.jpg
 
 
 = Neural Networks Training: basic concepts
