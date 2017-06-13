@@ -389,7 +389,7 @@ Thanks to the chain rule we compute the following gradients:
 * the weight gradient stem:[G_{W_i} = G_Y \cdot \frac{\partial F_{neuron}(X,W)}{\partial W_i}]
 senses the influence of the neuron's weights on the final error. stem:[G_{W_i}]
 will be used to update the current neuron weights
-* the weight gradient stem:[G_{B} = G_Y \cdot \frac{\partial F_{neuron}(X,W)}{\partial B}]
+* the bias gradient stem:[G_{B} = G_Y \cdot \frac{\partial F_{neuron}(X,W)}{\partial B}]
 for the same reason. stem:[G_{B}] will be used to update the current neuron bias
 * the input gradient stem:[G_{X_i} = G_Y \cdot \frac{\partial F_{neuron}(X,W)}{\partial X_i}]
 senses the influence of the current neuron input on the final error. stem:[G_{X_i}]
