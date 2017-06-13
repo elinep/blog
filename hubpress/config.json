@@ -11,7 +11,7 @@
   "urls": {
     "site": "https://elinep.github.io/blog",
     "hubpress": "https://elinep.github.io/blog",
-    "theme": "//elinep.github.io/blog/themes/saga",
+    "theme": "//elinep.github.io/blog/themes/casper",
     "images": "https://elinep.github.io/blog/images"
   },
   "initialisationConfigComponent": {
