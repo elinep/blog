@@ -6,12 +6,12 @@
     "cname": ""
   },
   "theme": {
-    "name": "roon"
+    "name": "casper"
   },
   "urls": {
     "site": "https://elinep.github.io/blog",
     "hubpress": "https://elinep.github.io/blog",
-    "theme": "//elinep.github.io/blog/themes/casper",
+    "theme": "//elinep.github.io/blog/themes/roon",
     "images": "https://elinep.github.io/blog/images"
   },
   "initialisationConfigComponent": {
