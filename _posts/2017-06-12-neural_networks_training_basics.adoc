@@ -1,0 +1,456 @@
+:published_at: 2017-06-12
+:hp-tags: Blog, Neural network
+:hp-alt-title: nn_training_basics
+:stem: latexmath
+// default image resource for local edition
+:imgdir: ./../images/2017-06-12-neural_networks_training_basics
+// uncomment for web publication
+:imgdir: 2017-06-12-neural_networks_training_basics
+
+:hp-image: https://elinep.github.io/blog/images/2017-06-12-neural_networks_training_basics/cover.jpg
+
+
+= Neural Networks Training: basic concepts
+
+I recently started to be interested in neural networks attracted by all the
+magical articles/results that flood the web.
+When you see magic, you want to understand the trick. That’s my case.
+A great resource to study this subject is the
+https://www.youtube.com/watch?v=yp9rwI_LZX8&list=PL16j5WbGpaM0_Tj8CRmurZ8Kk1gEBc7fg[Convolutional Neural Networks] course by Standford.
+This series of videos is nice and show that neural network concepts are accessible.
+There is still few points that struggled me for a while and my modest intent is
+that this post freshly written after having watched the video could help for a
+better understanding.
+
+== What is a neural network ?
+OK first, what kind of beast a neural network is and what’s its purpose. Well
+it’s just a giant function that process some input based on some parameters to
+compute some output.
+
+.Abstract view of a neural network
+image::{imgdir}/fig1.png[align="center"]
+
+So basically you present to your network some input data (images, numbers, text)
+and it generates an output (images, numbers, text) by computing:
+
+[.text-center]
+stem:[Y = f(X,W)]
+
+Note that the dimensions of stem:[X],stem:[Y] and stem:[W] are generally different.
+For example for an image classification task:
+
+* stem:[X] will be the dimensions of the image (example 128x128)
+* stem:[Y] will be the number of class (example 10) you want to detect
+* stem:[W] can be very large like millions of coefficients
+
+The stem:[f()] function is a kind of generic one defined by your network
+architecture and depends on:
+
+* type of neuron
+* number of neurons
+* how neurons interconnect each other
+* ...
+
+Its behavior is driven by the weights. The weights are the parameters you have to
+tune so that stem:[f()] does something interesting i.e. produces relevant output
+given the input and not just garbage.
+
+== What is training ?
+The goal of training is to find the value of the weights so that the network
+generates correct output.
+
+On supervised learning you present examples of input data and expected output.
+At the beginning the network will generate outputs far different from the
+expected ones.
+
+The difference between output and expected output is used to update the weights
+so that the error decreased.
+
+After many example submission and weights optimization cycle, you hope your
+network works correctly and can predict correctly new output with unseen data.
+
+So basically network training is a function fitting task.
+
+== How do you train ?
+OK first we need to measure the error between an expected output and current
+output of the network.
+
+This is called a loss function and it is added at the end of the network like this:
+
+.Loss function to compute error
+image::{imgdir}/fig2.png[align="center"]
+
+The loss function should have several properties:
+
+* its input are the output of the network and the output from the training data
+* its output is a scalar
+* it should measure properly the error : the more stem:[Y] and stem:[\tilde{Y}]
+are close, the less the error must be
+* it must be differentiable
+
+There are several ad-hoc loss function that we can use depending on our application.
+A very simple one - the stem:[L2] norm - consists in summing the square error on
+each output dimensions:
+
+[.text-center]
+stem:[L(Y,\tilde{Y}) = \sum{(Y_i-\tilde{Y_i})^2}]
+
+The training consists of finding the weights of the network that minimize the
+error. In math language, we perform:
+
+[.text-center]
+stem:[\underset{W}{\arg\min{}} L(Y,\tilde{Y})]
+
+It’s not a straight forward job. The problem is that the loss function is on top
+of the network which is a giant non linear function. We can’t compute the minimum
+right away from the data, network and loss function.
+
+How do we do then ? The answer is *gradient descent*.
+
+== Gradient descent
+
+Gradient descent is widely use to optimize function parameter. The basic idea is
+to test how the error evolves when slightly modifying each parameter.
+
+=== Analogy
+
+The famous analogy is a blind folded walker in the mountain looking for the valley.
+
+One possible strategy is to sense the slope by making tiny steps:
+
+* make a tiny step forward (X-axis) and sense if you’re going uphill or downhill
+(i.e. watch how you move on Z-axis). Go back to your position
+* make a tiny side step (Y-axis) and sense if you’re going uphill or downhill
+(i.e. watch how you move on Z-axis). Go back to your position
+* Thanks to this two steps, you know how the slope is oriented and you can make
+a step in the correct direction, generally a mixed of X and Y
+
+After several iterations you likely end in the valley, or at least in a local
+valley.
+
+The analogy points are:
+
+* the altitude (along Z-axis) is the error
+* your position (along X-axis and Y-axis) are the 2 parameters you want to
+optimize to find the minimum error
+* the tiny steps to sense the slope is the gradient
+
+=== Simple example
+Let’s formalize a bit this strategy with an example.
+Imagine you have the following loss function:
+
+[.text-center]
+stem:[L(w_1,w_2) = (w_1+2)^2+4(w_2-1)^2+3]
+
+To perform gradient descent, we need to compute the gradient of this loss function.
+The gradient is just the set of partial derivative of the loss function for the
+weight parameters.
+
+[.text-center]
+stem:[
+\nabla L(w_1,w_2) =
+\begin{bmatrix}
+\frac{\partial L(w_1,w_2)}{\partial w_1}
+\\
+\frac{\partial L(w_1,w_2)}{\partial w_2}
+\end{bmatrix}]
+
+The partial derivatives allows us to evaluate the slope along each axis at any
+given position. Our simple loss function is easy to derivate:
+
+[.text-center]
+stem:[
+\nabla L(w_1,w_2) =
+\begin{bmatrix}
+\frac{\partial L(w_1,w_2)}{\partial w_1}
+\\
+\frac{\partial L(w_1,w_2)}{\partial w_2}
+\end{bmatrix}
+=
+\begin{bmatrix}
+2w_1+4
+\\
+8w_2-8
+\end{bmatrix}]
+
+Now that we can compute the slope we can run the algorithm:
+
+1. evaluate the local gradient at the current position
+2. update the position by making step proportional to the local gradient
+3. go back to 1.
+
+Let’s do the first iteration:
+
+* we start at a random position stem:[w_1=-5, w_2=5]
+* we evaluate the gradient at this position
+stem:[
+\nabla L(-5,5) =
+\begin{bmatrix}
+\frac{\partial L(-5,5)}{\partial -5}
+\\
+\frac{\partial L(-5,5)}{\partial 5}
+\end{bmatrix}
+=
+\begin{bmatrix}
+2\times-5+4
+\\
+8\times5-8
+\end{bmatrix}
+=
+\begin{bmatrix}
+-6
+\\
+32
+\end{bmatrix}]
+which means that locally the error decreases a bit when stem:[w_1] increases,
+and the error increases a lot when stem:[w_2] increases.
+Therefore to go downhill we have to increase stem:[w_1] and decrease stem:[w_2]
+* Update current position to go downhill
+stem:[
+\begin{bmatrix}
+w_1
+\\
+w_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+w_1
+\\
+w_2
+\end{bmatrix}
+-
+\lambda
+\nabla L(w_1,w_2)
+=
+\begin{bmatrix}
+-5+6\lambda
+\\
+5-32\lambda
+\end{bmatrix}]
+where stem:[\lambda] is a scalar parameter to control the size of your step
+
+Here is graphically what happens for few iterations with stem:[\lambda=0.04]:
+
+.Gradient descent iterations for a simple function - The red dot, is the initial position. The arrows represents the evaluation of the current gradient (the slope on each axis). The surface is the loss function.
+image::{imgdir}/fig_gradient_descent.png[align="center"]
+
+NOTE: When to stop the algorithm? Generally for neural networks training,
+you run it a fix number of times. It is one of your hyperparameter. In the same
+time you monitor that your error behave correctly (i.e. decreases)
+
+We presented the basic gradient descent algorithm. It has a disadvantage of being
+very slow (you need a lot of iteration to find the best position). There are
+clever way to update the position but they all rely on the local gradient
+evaluation.
+
+OK so to train a neural network, we need to compute the partial derivative of
+the loss:
+
+[.text-center]
+stem:[\frac{\partial L(f(X,W),\tilde{Y})}{\partial{W_i}}]
+
+The problem is that it’s not straightforward as stem:[f()] can be very complex.
+We can’t compute it by hand as we did with our little example. We could evaluate
+numerically the gradient by running the network with tiny variation on each weight
+at a time and monitor the error but it has drawbacks:
+
+* it is an approximation
+* you need to run the network (i.e. evaluate ) as many times as the number of
+weights just for one gradient descent iteration which is impractical.
+
+The solution is the *backward propagation*.
+
+== Backward propagation
+So far we abstracted the neural network with the function stem:[Y = f(X,W)].
+Before introducing back propagation, let’s see how this function looks like.
+
+=== Neural networks, under the hood
+A neural network is a composition of elementary functions called neurons.
+The neuron transformation is quite basic. It combines the input and generate a
+scalar output. There are several variants but here is a typical one:
+
+[.text-center]
+stem:[Y = f_{neuron}(X,W,B) = \max(0,\sum\limits_{i=0}^{N}{(X_i \cdot W_i)}+B)]
+
+[.text-center]
+with stem:[Y \in \mathbb{R}], stem:[X \in \mathbb{R}^N], stem:[W \in \mathbb{R}^{N}]
+and stem:[B \in \mathbb{R}]
+
+This function simply computes a weighted sum of the input data,
+adds a bias and saturates the result with stem:[\max()]. The stem:[\max()] part
+is called the activation function.
+There are different possible activation functions.
+
+NOTE: The bias like the weights is a parameter that needs to be trained.
+That’s why stem:[B] is often omitted and included in stem:[W] and we simply write: stem:[Y = f_{neuron}(X,W)]
+with stem:[W \in \mathbb{R}^{N+1}]
+
+By chaining several layers of neurons, you obtain a neural network:
+
+.A neural network
+image::{imgdir}/fig3.png[align="center"]
+
+Backward propagation is a recursive method to evaluate the gradient of
+the loss function (i.e. stem:[\frac{\partial L(Y,\tilde{Y})}{\partial W_i}])
+by considering one simple neuron at a time.
+
+=== Chain rule
+Backward propagation relies on the chain rule.
+The chain rule is a method to compute the derivative of the composition of
+two functions.
+
+Consider two functions stem:[y_f=f(x_f)], stem:[y_g=g(x_g)] and compose them
+to form a third one:
+
+[.text-center]
+stem:[y=h(x)=g(f(x))]
+
+.Composition of two functions
+image::{imgdir}/fig4.png[align="center"]
+
+Chain rule states:
+
+[.text-center]
+stem:[\frac{df}{dx}(a) = \frac{dg}{df}(f(a)) \cdot \frac{df}{dx}(a)]
+
+In other word, to derivate a composition of function we simply multiply the
+derivative of the underlying functions where they are individually evaluated.
+
+Let’s see with an example:
+
+* stem:[f(x)=3x+1]
+* stem:[g(f)=f^2]
+* stem:[h(x)=g(f(x))=(3x+1)^2=9x^2+6x+1]
+
+By evaluating the derivative of stem:[h] on point stem:[a] directly we find:
+
+[.text-center]
+stem:[\frac{dh}{dx}(a) = 18a+6]
+
+With the chain rule method we find:
+
+[.text-center]
+stem:[\frac{dg}{df}=2f], stem:[\frac{df}{dx}=3]
+
+so,
+
+[.text-center]
+stem:[\frac{dg}{df}(f(a))=2f(a)=2(3a+1)], stem:[\frac{df}{dx}(a)=3]
+
+putting all together,
+
+[.text-center]
+stem:[\frac{dh}{dx}(a)=\frac{dg}{df}(f(a)) \cdot \frac{df}{dx}(a) = (6a+2) \cdot 3 = 18a+6]
+as expected
+
+From stem:[f] point of view, it means that to compute the derivative regarding stem:[x]
+for a particular value stem:[a], we need:
+
+* stem:[\frac{df}{dx}(a)], the local derivative
+* stem:[\frac{dg}{df}(f(a))] which is the evaluation of the local derivative of
+the next « block » i.e. the stem:[g] function
+
+=== Chain rule applied to a network
+
+The idea of back propagation is to apply chain rule on the loss function
+stem:[L(Y,\tilde{Y})].
+For each function of the network (neuron, loss) we will evaluate the gradient of
+the output regarding the input that are influenced by the weights of the networks.
+
+==== Gradient propagation in the loss function
+We start by evaluating the gradient of the error on the loss function.
+The loss function depends on two variable:
+
+* the network output stem:[Y] which obviously depends on the weights stem:[W].
+The gradient stem:[G_Y] must be evaluated
+* the expected output stem:[\tilde{Y}] from the training data which does not depend
+on the weight. There is no need to compute stem:[G_{\tilde{Y}}]
+
+For the loss function we introduced earlier we have:
+
+[.text-center]
+stem:[G_{Y_i} = \frac{\partial L(Y,\tilde{Y})}{\partial Y_i}
+= \frac{\partial \sum{(Y_i-\tilde{Y_i})^2} }{\partial Y_i}
+= 2(Y_i - \tilde{Y}_i)]
+
+Once the gradient has been evaluated in the loss function, it can flows in the
+neurons. We transmit stem:[G_Y] to the last neurons of the network which are placed
+right before the loss function.
+These last neuron will also compute gradient and transmit it to their ancestors
+and so on until we reach the first neurons of the network.
+
+==== Gradient propagation in a neuron
+Let's focus on one neuron and assume we receive the gradient stem:[G_Y] from the
+next neurons (i.e. all the neurons that use our output as input) or from the loss
+function when we are one of the last neurons.
+
+Thanks to the chain rule we compute the following gradients:
+
+* the weight gradient stem:[G_{W_i} = G_Y \cdot \frac{\partial F_{neuron}(X,W)}{\partial W_i}]
+senses the influence of the neuron's weights on the final error. stem:[G_{W_i}]
+will be used to update the current neuron weights
+* the bias gradient stem:[G_{B} = G_Y \cdot \frac{\partial F_{neuron}(X,W)}{\partial B}]
+for the same reason. stem:[G_{B}] will be used to update the current neuron bias
+* the input gradient stem:[G_{X_i} = G_Y \cdot \frac{\partial F_{neuron}(X,W)}{\partial X_i}]
+senses the influence of the current neuron input on the final error. stem:[G_{X_i}]
+will tell to the previous neuron how it should modify its output so that our
+output help to decrease the error.
+
+.Gradient flow inside a neuron
+image::{imgdir}/fig5.png[align="center"]
+
+With the neuron definition we have seen, we obtain:
+
+[.text-center]
+stem:[{F_{neuron}(X,W,B) = \max(0,\sum\limits_{i=0}^{N}{(X_i \cdot W_i)}+B)} = Y]
+
+[.text-center]
+stem:[G_{W_i} = G_Y \cdot \frac{\partial F_{neuron}(X,W,B)}{\partial W_i}
+=G_Y \cdot
+\Big\{
+\begin{matrix}
+X_i & Y>0 \\
+0 & Y \leqslant 0
+\end{matrix}]
+
+[.text-center]
+stem:[G_{B} = G_Y \cdot \frac{\partial F_{neuron}(X,W,B)}{\partial W_B}
+=G_Y \cdot
+\Big\{
+\begin{matrix}
+1 & Y>0 \\
+0 & Y \leqslant 0
+\end{matrix}]
+
+[.text-center]
+stem:[G_{X_i} = G_Y \cdot \frac{\partial F_{neuron}(X,W,B)}{\partial W_i}
+=G_Y \cdot
+\Big\{
+\begin{matrix}
+W_i & Y>0 \\
+0 & Y \leqslant 0
+\end{matrix}]
+
+stem:[G_{X_i}] are transmitted to previous neurons while stem:[G_{W_i}] and
+stem:[G_{B}] are used by the gradient descent algorithm to update parameters
+stem:[W] and stem:[B] for the current neuron.
+
+NOTE: Most of the time a neuron output is linked to multiple neurons.
+Therefore during back propagation a neuron receive several stem:[G_{Y_i}] gradients.
+The gradient used for back propagation is simply the sum of all the incoming
+gradients stem:[G_Y = \sum{G_{Y_i}}] (see https://en.wikipedia.org/wiki/Chain_rule#Higher_dimensions).
+
+== Training process overview
+We have all the tools required to train a network. Let's summarize:
+
+1. we set up a network by connecting multiple neurons
+2. we prepare training data: input stem:[X] and ground truth associated output
+ stem:[Y]
+3. we choose a loss function and add it at the end of the network
+4. we pick up an example and run it through the network and the loss function
+(*forward propagation*)
+5. we compute gradient from the loss function to the first neurons of the network
+(*backward propagation*)
+6. thanks to the weight and bias gradients, we make a tiny update of the neuron's
+weights and bias (*gradient descent*)
+7. we go back to *4* and loop for many iterations.
