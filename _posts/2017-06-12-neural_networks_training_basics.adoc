@@ -12,7 +12,7 @@
 
 = Neural Networks Training: basic concepts
 
-I recently starter to be interested in neural networks attracted by all the
+I recently started to be interested in neural networks attracted by all the
 magical articles/results that flood the web.
 When you see magic, you want to understand the trick. That’s my case.
 A great resource to study this subject is the
