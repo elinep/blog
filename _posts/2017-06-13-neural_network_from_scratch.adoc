@@ -1,0 +1,621 @@
+:published_at: 2017-06-13
+:hp-tags: Blog, Neural network, Python
+:hp-alt-title: nn_from_scratch
+:stem: latexmath
+// default image resource for local edition
+:imgdir: ./../images/2017-06-13-neural_network_from_scratch
+// uncomment for web publication
+:imgdir: 2017-06-13-neural_network_from_scratch
+
+:hp-image: https://elinep.github.io/blog/images/2017-06-13-neural_network_from_scratch/cover.png
+
+= Neural Networks from scratch
+
+In the https://elinep.github.io/blog/2017/06/12/neural_networks_training_basics.html[previous post]
+we saw the theory about neural network training. It's time to practice by writing
+a basic implementation from scratch in python. The code is available
+https://github.com/elinep/nn_from_scratch/blob/master/scratch_nn.py[here].
+
+== Objectives
+
+Few goals for our tiny neural network framework :
+
+* the network architecture must be easy to define (number of layers, neuron
+per layers, ...)
+* we will focus on fully connected network
+* it must be trainable
+* no use of specialized package like tensorflow
+
+To test it, we will train the network to approximate a function. I arbitrarily
+choose the next one:
+
+[.text-center]
+stem:[y = f(x_0,x_1) = x_0 x_1 + 2x_0 + 1]
+[.text-center]
+stem:[(x_0,x_1) \in \mathbb{R}^2] and stem:[y \in \mathbb{R}]
+
+.Our objective function
+image::{imgdir}/fig1.png[align="center"]
+
+== Code
+
+=== Block class
+
+==== AbstractBlock class
+We start by defining an abstract class which will be the base class for all the
+nodes (neurons, activation function, loss function) in the network.
+
+This class defines 3 methods:
+
+* *forward()*, receives input data and return an output, used for *forward
+propagation*
+* *backward()* receives output gradient and return input gradient, used for
+*backward propagation*
+* *update()* called during *weights update*. This function is optional because
+blocks like loss/activation functions do not have weights.
+
+
+[[src-listing]]
+[source,python]
+----
+class AbstractBlock(object):
+    '''
+    Abstract class of a block
+    a block has multiple input, one output.
+    a block must have forward() and backward() methods
+    update() method is optional
+    '''
+    def __init__(self, input_dim):
+        self.input_dim = input_dim
+        # input data
+        self.x = np.zeros(input_dim)
+        # output data
+        self.y = 0
+        # gradient data
+        self.grad_x = np.zeros(input_dim)
+
+    '''
+    forward pass
+    input_data is a vector, each element corresponds to a neuron input
+    '''
+    def forward(self, input_data):
+        raise NotImplementedError('forward not implemented')
+
+    '''
+    backward pass
+    output_gradient is a scalar
+    '''
+    def backward(self, output_gradient):
+        raise NotImplementedError('backward not implemented')
+
+    '''
+    trigger weight update
+    '''
+    def update(self, learn_rate):
+        pass
+----
+
+NOTE: forward() and backward() do not have default implementation as we don't know
+yet what an AbstractBlock computes.
+
+==== Neuron class
+Now we define the *Neuron* class which inherits from *AbstractBlock* and implements
+the neuron transformation:
+
+[[src-listing]]
+[source,python]
+----
+class Neuron(AbstractBlock):
+    '''
+    Neuron class computing a weighted sum of its input
+    '''
+    def __init__(self, input_dim):
+        super(Neuron, self).__init__(input_dim)
+        # initialize random weight
+        self.weight = np.random.normal(loc=0.0, scale=0.1, size=(input_dim))
+        # initialize bias
+        self.bias = 0.0
+        # init weight and bias gradient
+        self.grad_weight = np.zeros(input_dim)
+        self.grad_bias = 0.0
+
+    def forward(self, input_data):
+        # save input data
+        self.x = input_data
+        # compute output
+        self.y = np.dot(self.x, self.weight) + self.bias
+        return self.y
+
+    def backward(self, output_gradient):
+        self.grad_bias = output_gradient
+        self.grad_weight = self.x * output_gradient
+        self.grad_x = self.weight * output_gradient
+        return self.grad_x
+
+    def update(self, learn_rate):
+        self.weight += -learn_rate * self.grad_weight
+        self.bias += -learn_rate * self.grad_bias
+----
+
+*Neuron* has some extra initialization compared to *AbstractBlock* since it has
+weight and bias parameters. Weights are randomly initialized while bias is set to
+0
+
+[[src-listing]]
+[source,python]
+----
+def __init__(self, input_dim):
+    super(Neuron, self).__init__(input_dim)
+    # initialize random weight
+    self.weight = np.random.normal(loc=0.0, scale=0.1, size=(input_dim))
+    # initialize bias
+    self.bias = 0.0
+    # init weight and bias gradient
+    self.grad_weight = np.zeros(input_dim)
+    self.grad_bias = 0.0
+----
+
+*forward()* implements the neuron definition:
+
+[.text-center]
+stem:[Y = f_{neuron}(X,W,B) = \sum\limits_{i=0}^{N}{(X_i \cdot W_i)}+B]
+
+*backward()* compute the partial derivative with respect to the parameters (weight, bias)
+and the input data (x) and multiply the result by the output gradient (chain rule):
+
+[.text-center]
+stem:[G_{W_i} = G_Y \cdot \frac{\partial F_{neuron}(X,W,B)}{\partial W_i}
+=G_Y \cdot X_i]
+
+[.text-center]
+stem:[G_{B} = G_Y \cdot \frac{\partial F_{neuron}(X,W,B)}{\partial W_B}
+=G_Y \cdot 1]
+
+[.text-center]
+stem:[G_{X_i} = G_Y \cdot \frac{\partial F_{neuron}(X,W,B)}{\partial W_i}
+=G_Y \cdot W_i]
+
+
+*update()* implements the gradient descent by incrementing the neuron parameter
+with a fraction of the gradient:
+[.text-center]
+stem:[W_i = W_i - \lambda G_{W_i}]
+[.text-center]
+stem:[B = B - \lambda G_{B}]
+
+==== Activation class
+
+The activation function is placed right after a neuron. It is a
+stem:[\mathbb{R} \to \mathbb{R}] as opposite to a neuron which is
+stem:[\mathbb{R}^N \to \mathbb{R}]. It doesn't have any parameters. Here we implement
+the popular *relu*:
+
+[.text-center]
+stem:[Y = f_{relu}(X) = \max(0,X)]
+
+[[src-listing]]
+[source,python]
+----
+class Relu(AbstractBlock):
+    '''
+    Relu activation function block
+    '''
+    def __init__(self):
+        super(Relu, self).__init__(1)
+
+    def forward(self, input_data):
+        # save input data
+        self.x = input_data
+        # compute output
+        self.y = max(0.0, self.x)
+        return self.y
+
+    def backward(self, output_gradient):
+        if self.x > 0:
+            self.grad_x = output_gradient
+        else:
+            self.grad_x = 0.0
+        return self.grad_x
+----
+
+*backward()* is straight forward to implement. The function varies only with its
+scalar input:
+
+[.text-center]
+stem:[G_X = G_Y \cdot \frac{\partial f_{relu}(X)}{\partial X}
+=G_Y \cdot
+\Big\{
+\begin{matrix}
+1 & Y>0 \\
+0 & Y \leqslant 0
+\end{matrix}]
+
+NOTE: strictly speaking the stem:[f_{relu}(X)] can not be derived for stem:[X=0]
+In practice it is not annoying as it affects only one single point and we arbitrarily
+choose to extend the derivative from stem:[X<0] or stem:[X>0]
+
+*update()* class is not redefined as there are no weights to optimize in an activation
+function
+
+==== Loss class
+
+A loss function computes the error between the output of the network and the expected
+output from the training data. We need a way to provide the expected data to a loss *block*.
+We define an *AbstractLoss* class for this purpose
+
+===== AbstractLoss class
+
+[[src-listing]]
+[source,python]
+----
+class AbstractLoss(AbstractBlock):
+    '''
+    Abstract class of a loss function
+    A loss function is a "block" with a setExpectedData() method to set
+    the ground truth result of a neural network
+    '''
+    def __init__(self, input_dim):
+        super(AbstractLoss, self).__init__(input_dim)
+        self.expected_data = np.zeros(input_dim)
+
+    def setExpectedData(self, expected_data):
+        self.expected_data = expected_data
+----
+
+*AbstractLoss* only adds a new method *setExpectedData()* to the *AbstractBlock*.
+*setExpectedData()* is used to pass the ground truth output from the training data.
+The expected data are stored to be used later by the *forward()* method.
+
+===== LossL2 class
+
+Now we implement a real loss function, the stem:[L2] norm:
+
+[.text-center]
+stem:[L(Y,\tilde{Y}) = \sum{(Y_i-\tilde{Y_i})^2}]
+
+[[src-listing]]
+[source,python]
+----
+class LossL2(AbstractLoss):
+    '''
+    A loss function that compute the L2 norm between its input_data and
+    ground truth data
+    '''
+    def __init__(self, input_dim):
+        super(LossL2, self).__init__(input_dim)
+
+    def forward(self, input_data):
+        # save input data
+        self.x = input_data
+        # compute L2 distance between input data and expected input data
+        self.y = np.sum(np.square(self.x - self.expected_data))
+        return self.y
+
+    def backward(self):
+        self.grad_x = 2 * (self.x - self.expected_data)
+        return self.grad_x
+----
+
+*backward()* takes no argument as we compute the gradient with respect to the
+error. The loss function is the first stage for
+*backward propagation*. We only compute the gradient with respect to stem:[Y] as
+stem:[\tilde{Y}] do not varies with the weights of the network.
+
+=== Network class
+
+We have all the elementary blocks we need. Let's write a new class to manage them.
+The *Network* class will allow us to build/train and run a network.
+
+=== building network
+
+First let's focus on the functions to build the network
+
+When instantiating the *Neuron* we provide the dimensions of our input and output
+data. These informations are used to determine the number of inputs per neuron of
+the first layer and the number of neurons of the last layer.
+
+[[src-listing]]
+[source,python]
+----
+def __init__(self, input_dim, output_dim):
+    # data dimensions
+    self._input_dim = input_dim
+    self._output_dim = output_dim
+    # the neuron layer stack
+    self._network = []
+    # helper to know the number of input for the next neuron layer
+    self._last_input_dim = input_dim
+    # the loss function will be added later
+    self._loss = None
+    # current output of the network
+    self._last_network_output = np.zeros(output_dim)
+----
+
+We define a method to add a layer of neuron. This method takes an *AbstractBlock*
+as first argument which defines the neuron transformation. The second argument is
+the number of neurons for the layer.
+
+[[src-listing]]
+[source,python]
+----
+'''
+Add a layer of neuron fully connected to the previous layer
+'''
+def addNeuronlayer(self, NeuronClassType, size):
+    layer = {
+        'data' : [ NeuronClassType(self._last_input_dim) for i in range(size)],
+        'input_dim' : self._last_input_dim,
+        'output_dim' : size,
+        'type' : 'neuron'
+    }
+    self._network.append(layer)
+    self._last_input_dim = size
+----
+
+*addNeuronlayer()* method adds a fully connected layer. Each neuron of the layer
+considers all the output of the previous layer as input.
+We instantiate *size* neurons, add some metadata and stack them into the
+*self._network* array.
+
+We write a similar method to add an activation layer.
+
+[[src-listing]]
+[source,python]
+----
+'''
+Add an activation layer (one activation block per block of the previous layer)
+'''
+def addActivationLayer(self, ActivationClassType):
+    layer = {
+        'data' : [ ActivationClassType() for i in range(self._last_input_dim)],
+        'input_dim' : self._last_input_dim,
+        'output_dim' : self._last_input_dim,
+        'type' : 'activation'
+    }
+    self._network.append(layer)
+    pass
+----
+
+Since activation function are placed after each neuron, there is no *size* argument.
+We create as many *ActivationClass* as neurons in the previous layer.
+
+=== set loss
+
+The user can set the loss function thanks to the next method
+
+[[src-listing]]
+[source,python]
+----
+'''
+Set the loss function for the optimization
+'''
+def setLoss(self, LossClass):
+    self._loss = LossClass(self._output_dim)
+----
+
+=== forward/backward propagation through the network
+
+Next method propagates data by iterating over layers and blocks. It returns the
+network output.
+
+[[src-listing]]
+[source,python]
+----
+'''
+Process input_data by the network
+'''
+def _forward(self, input_data):
+    layer_input = input_data
+    layer_i = 0
+    for layer in self._network:
+        # temporary layer output
+        layer_output = np.zeros(layer['output_dim'])
+
+        if layer['type'] == 'neuron':
+            # feed each block of the layer with the input data
+            b_i = 0
+            for b in layer['data']:
+                layer_output[b_i] = b.forward(layer_input)
+                b_i += 1
+        elif layer['type'] == 'activation':
+            # one to one connection between input data and output data elements
+            b_i = 0
+            for b in layer['data']:
+                layer_output[b_i] = b.forward(layer_input[b_i])
+                b_i += 1
+        else:
+            raise ValueError('unknow layer type %s, can not run the network' % layer['type'])
+
+        # current output is the input of the next layer
+        layer_input = layer_output
+        layer_i += 1
+
+    return layer_output
+----
+
+As we notice, there are two cases:
+
+* layer of neuron, the entire output vector of the previous layer is fed to each
+neurons since we are implementing a fully connected network.
+* layer of activation function, only the output of the matching previous layer neuron is fed
+to the activation function
+
+The output of the current layer becomes the input of the next layer.
+
+Similarly we have the backward propagation.
+
+[[src-listing]]
+[source,python]
+----
+'''
+Back propagate through the entire network
+'''
+def _backward(self, output_grad):
+    layer_output_grad = output_grad
+    layer_i = 0
+    for layer in reversed(self._network):
+        # temporary layer input gradient
+        layer_input_grad = np.zeros(layer['input_dim'])
+
+        if layer['type'] == 'neuron':
+            b_i = 0
+            for b in layer['data']:
+                layer_input_grad += b.backward(layer_output_grad[b_i])
+                b_i += 1
+        elif layer['type'] == 'activation':
+            b_i = 0
+            for b in layer['data']:
+                layer_input_grad[b_i] = b.backward(layer_output_grad[b_i])
+                b_i += 1
+        else:
+            raise ValueError('unknow layer type %s, can not run the network' % layer['type'])
+
+        layer_output_grad = layer_input_grad
+        layer_i += 1
+    return
+----
+
+There are also two cases:
+
+* layer of neuron, we accumulate the gradient since the output of the previous layer is
+connected to multiple neurons.
+* layer of activation function, we provide a scalar gradient and get a scalar gradient
+
+=== Training
+
+The training iterates over a set of examples. Each example is forward propagated
+through the network. The error is computed thanks to the loss block. We then back
+propagate through the loss and the network. Finally we trigger a weight *update()*
+for all *block* of the network. In the meantime we average the error over the whole
+training set to monitor the training behavior. The full training set is presented
+*epoch* times.
+
+[[src-listing]]
+[source,python]
+----
+'''
+Train the network with examples
+(X,Y) training data set (each row is an example)
+'''
+def train(self, X, Y, epoch, learn_rate):
+    num_example = X.shape[1]
+    loss_historic = np.zeros(epoch)
+    for e in range(epoch):
+        l_mean = 0.0
+        for x, y in zip(X, Y):
+            # do forward pass
+            network_output = self._forward(x)
+            # compute loss
+            self._loss.setExpectedData(y)
+            l_mean += self._loss.forward(network_output)
+            # back propagate
+            l_grad = self._loss.backward()
+            self._backward(l_grad)
+            # update weight
+            self._update(learn_rate)
+        loss_historic[e] = l_mean / num_example
+        print("epoch %d/%d average loss %f" % (e, epoch, loss_historic[e]))
+    return loss_historic
+
+    '''
+    Trigger a weight update for every block of the network
+    '''
+    def _update(self, learn_rate):
+        for layer in self._network:
+            for b in layer['data']:
+                b.update(learn_rate)
+----
+
+=== Running
+Finally a method for forward propagation only to use our network once trained.
+
+[[src-listing]]
+[source,python]
+----
+'''
+Process a bunch of input data
+'''
+def run(self, input_data):
+    input_data = input_data.reshape((-1, self._input_dim))
+    y = np.zeros((input_data.shape[0], self._output_dim))
+    i = 0
+    for x in input_data:
+        y[i, :] = self._forward(x)
+        i += 1
+    return y
+----
+
+== Main
+
+The main() function prepares the training data, sets up the network, trains it
+and displays the results.
+
+=== Training data
+
+We define a lambda objective function as defined in the introduction. We generate
+random input data and process them with our objective function.
+
+[[src-listing]]
+[source,python]
+----
+# the objective function the network has to mimic
+function_to_learn = lambda x0, x1: np.add(np.multiply(x0, x1), 2 * x0) + 1
+
+x_range = 10
+# generate random input data
+X_train = np.random.uniform(-x_range, x_range, (NUM_EXAMPLES, 2))
+# generate matching output data
+Y_train = function_to_learn(X_train[:, 0], X_train[:, 1])
+----
+
+=== Build model
+
+We instantiate a network and stack neuron layers and activation layers. Each layer
+has *NUM_HIDDEN_NODES* neurons and there are *NUM_HIDDEN_LAYER* layers. We end with
+a single neuron which is the output of the network.
+
+[[src-listing]]
+[source,python]
+----
+model = Network(2, 1)
+for h in range(NUM_HIDDEN_LAYER):
+    model.addNeuronlayer(Neuron, NUM_HIDDEN_NODES)
+    model.addActivationLayer(Relu)
+model.addNeuronlayer(Neuron, 1)
+----
+
+=== Trainning
+
+Finally we set a loss function and start training.
+
+[[src-listing]]
+[source,python]
+----
+model.setLoss(LossL2)
+loss_historic = model.train(X_train, Y_train, NUM_EPOCHS, LEARNING_RATE)
+----
+
+== Results
+
+The script displays two figures. First, an overlay of the objective function and
+the network function. As we can see both overlay quite nicely.
+
+.Network vs Objective function
+image::{imgdir}/fig2.png[align="center"]
+
+The error also decreases nicely:
+
+.Error over time
+image::{imgdir}/fig3.png[align="center"]
+
+In the main function we have all the hyperparameters we can play with:
+
+[[src-listing]]
+[source,python]
+----
+NUM_HIDDEN_NODES = 10
+NUM_HIDDEN_LAYER = 2
+NUM_EXAMPLES = 1000
+NUM_EPOCHS = 200
+LEARNING_RATE = 0.0001
+----
