@@ -7,7 +7,7 @@
 // uncomment for web publication
 :imgdir: 2017-06-22-why_activation_function
 
-:hp-image: https://elinep.github.io/blog/images/2017-06-22-why_activation_function/cover.png
+:hp-image: https://elinep.github.io/blog/images/2017-06-22-why_activation_function/cover.jpg
 
 = Why an activation function ?
 
