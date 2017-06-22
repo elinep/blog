@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Why an activation function ?</title>
+    <meta name="description" content="" />
+    <link href="//fonts.googleapis.com/css?family=Noto+Sans:300,400,700" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic" rel="stylesheet" type="text/css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="//elinep.github.io/blog/themes/saga/assets/css/style.css?v=1498129369717" rel="stylesheet" type="text/css">
+    <link href="//elinep.github.io/blog/themes/saga/assets/css/animate.min.css?v=1498129369717" rel="stylesheet" type="text/css">
+    <link href="https://elinep.github.io/blog/favicon.ico" rel="shortcut icon">
+    <link rel="canonical" href="https://elinep.github.io/blog/2017/06/22/why_activation_function.html" />
+    <meta name="referrer" content="origin" />
+    
+    <meta property="og:site_name" content="" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Why an activation function ?" />
+    <meta property="og:description" content="A quick explanation why a neural network with several layers and no activation function is useless. This might sound trivial but I&amp;#8217;m sure did ask yourself first time you heard about hidden layer. Without activation Consider two layers of neurons. The first layer has \(n\) neurons, the second" />
+    <meta property="og:url" content="https://elinep.github.io/blog/2017/06/22/why_activation_function.html" />
+    <meta property="og:image" content="https://elinep.github.io/blog/images/2017-06-22-why_activation_function/cover.jpg" />
+    <meta property="article:published_time" content="2017-06-22T00:00:00.000Z" />
+    <meta property="article:tag" content="Blog" />
+    <meta property="article:tag" content="Neural network" />
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Why an activation function ?" />
+    <meta name="twitter:description" content="A quick explanation why a neural network with several layers and no activation function is useless. This might sound trivial but I&amp;#8217;m sure did ask yourself first time you heard about hidden layer. Without activation Consider two layers of neurons. The first layer has \(n\) neurons, the second" />
+    <meta name="twitter:url" content="https://elinep.github.io/blog/2017/06/22/why_activation_function.html" />
+    <meta name="twitter:image:src" content="https://elinep.github.io/blog/images/2017-06-22-why_activation_function/cover.jpg" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "",
+    "author": {
+        "@type": "Person",
+        "name": "elinep",
+        "image": "https://avatars0.githubusercontent.com/u/29272214?v=3",
+        "url": "https://elinep.github.io/blog/author/elinep/"
+    },
+    "headline": "Why an activation function ?",
+    "url": "https://elinep.github.io/blog/2017/06/22/why_activation_function.html",
+    "datePublished": "2017-06-22T00:00:00.000Z",
+    "image": "https://elinep.github.io/blog/images/2017-06-22-why_activation_function/cover.jpg",
+    "keywords": "Blog, Neural network",
+    "description": "A quick explanation why a neural network with several layers and no activation function is useless. This might sound trivial but I&amp;#8217;m sure did ask yourself first time you heard about hidden layer. Without activation Consider two layers of neurons. The first layer has \\(n\\) neurons, the second"
+}
+    </script>
+
+    <meta name="generator" content="HubPress" />
+    <link rel="alternate" type="application/rss+xml" title="" href="https://elinep.github.io/blog/rss/" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/atom-one-dark.min.css">
+</head>
+<body class="post-template tag-Blog tag-Neural-network">
+    <header id="header" class="animated fadeIn" style="background-image: url(https://elinep.github.io/blog/images/2017-06-22-why_activation_function/cover.jpg)">
+    <div class="header-background">
+    <section class="blog-content">
+        <a id="site-url" class="blog-title" href="https://elinep.github.io/blog"></a>
+        <span class="blog-description"></span>
+        <nav class="links fadeIn animated">
+            <ul>
+                <li class="rss"><a title="RSS Feed" href="/rss/"><i class="fa fa-fw fa-rss-square"></i></a></li>
+        
+            </ul>
+        </nav>
+    </section>
+    <section class="header-content">
+        <h1 class="post-title animated fadeInUp">Why an activation function ?</h1>
+        <span class="post-data"><span class="date animated fadeInUp"><i class="fa fa-clock-o"></i> <time class="timesince date" data-timesince="1498082400" datetime="2017-06-22T00:00" title="22 June 2017">13 hours ago</time></span>
+            <span class="tags animated fadeInUp"><i class="fa fa-tags"></i> <a href="https://elinep.github.io/blog/tag/Blog/">Blog</a>, <a href="https://elinep.github.io/blog/tag/Neural-network/">Neural network</a></span>
+            <span class="author animated fadeInUp"><i class="fa fa-user"></i> <a href="https://elinep.github.io/blog/author/elinep/">elinep</a></span></span>
+    </section>
+    </div>
+</header>
+<main id="main" class="content">
+    <article itemtype="http://schema.org/BlogPosting" class="animated fadeIn content post post tag-Blog tag-Neural-network">
+        <section class="post-content">
+            <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>A quick explanation why a neural network with several layers and no activation
+function is useless. This might sound trivial but I&#8217;m sure did ask yourself first
+time you heard about hidden layer.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_without_activation">Without activation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Consider two layers of neurons. The first layer has \(n\) neurons, the second
+layer has one neuron. The input data is the vector \(X\), the intermediate
+result is the vector \(X_h\) and the network output is the scalar \(y\).
+Neuron&#8217;s parameters in the first layer are \(W_{h_i}\) and \(B_{h_i}\).
+Neuron&#8217;s parameters in the last layer are \(W\) and \(B\). First layer
+neuron has \(m\) inputs. There are \(n\) neurons in the first layer.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="https://elinep.github.io/blog/images/2017-06-22-why_activation_function/fig1.png" alt="fig1.png">
+</div>
+<div class="title">Figure 1. A generic fully connected two layers network</div>
+</div>
+<div class="paragraph">
+<p>For each neuron in the first layer we have:</p>
+</div>
+<div class="paragraph text-center">
+<p>\(x_{h_i} = X \cdot W_{h_i} + B_i\)</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s put it in a matrix form:</p>
+</div>
+<div class="paragraph text-center">
+<p>\(\mathbf{ X_h = X \cdot W_h + B_h }\)</p>
+</div>
+<div class="paragraph">
+<p>\(W_h = \begin{bmatrix} W_{h_0} \\ W_{h_1} \\ ... \\ W_{h_n} \end{bmatrix}\)
+is the \(m \times n\) matrix holding the weights of the first layer,
+\(B_h = \begin{bmatrix} B_{h_0} \\ B_{h_1} \\ ... \\ B_{h_n} \end{bmatrix}\)
+is a \(n\)-vector holding the bias. Similarly \(X\) is the input
+\(m\)-vector and \(X_h\) is the first layer output \(n\)-vector</p>
+</div>
+<div class="paragraph">
+<p>The output neuron computes:</p>
+</div>
+<div class="paragraph text-center">
+<p>\(y = W \cdot X_h  + B\)</p>
+</div>
+<div class="paragraph">
+<p>By composing the two layers, we have:</p>
+</div>
+<div class="paragraph text-center">
+<p>\(y = W \cdot ( W_h \cdot X + B_h ) + B\)</p>
+</div>
+<div class="paragraph">
+<p>By expansing, we get:</p>
+</div>
+<div class="paragraph text-center">
+<p>\(y = W \cdot W_h \cdot X + W \cdot B_h + B\)</p>
+</div>
+<div class="paragraph">
+<p>Which matches the definition of a single neuron:</p>
+</div>
+<div class="paragraph text-center">
+<p>\(\mathbf{y = W' \cdot X + B'}\)</p>
+</div>
+<div class="paragraph">
+<p>with \(W' = W \cdot W_h\) and
+\(B' = W \cdot B_h + B\)</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="https://elinep.github.io/blog/images/2017-06-22-why_activation_function/fig2.png" alt="fig2.png">
+</div>
+<div class="title">Figure 2. The 2 layers network is equivalent to a single neuron</div>
+</div>
+<div class="paragraph">
+<p>Recursively we can reduce any \(N\)-layers model to a single neuron.
+We start with the terminal neuron of the network (layer \(N\)) and its input
+(layer \(N-1\)). We then replace the terminal neuron and layer \(N-1\)
+by the equivalent single neuron. By repeating this operation you end up with a
+single neuron.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_with_activation">With activation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s see what happens when we introduce an activation function. Each scalar output
+of the first layer is transformed before entering last neuron.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="https://elinep.github.io/blog/images/2017-06-22-why_activation_function/fig3.png" alt="fig3.png">
+</div>
+<div class="title">Figure 3. A generic fully connected two layers network with activation function</div>
+</div>
+<div class="paragraph">
+<p>When we compose all transformations we obtain:</p>
+</div>
+<div class="paragraph text-center">
+<p>\(y = W \cdot F_{activation}( W_h \cdot X + B_h ) + B\)</p>
+</div>
+<div class="paragraph">
+<p>Now we&#8217;re stuck, we can&#8217;t develop this expression as we did before unless the activation
+function is a simple linear transform like \(f(x) = ax+b\) but it is purposely
+non linear. With non linear activation functions we can&#8217;t simplify the network anymore.
+Thanks to the activation function, at least one hidden layer can be justified when
+arbitrary non linear transformations must be learned by the network.</p>
+</div>
+</div>
+</div>
+        </section>
+
+    
+        <section class="post-comments">
+          <div id="disqus_thread"></div>
+          <script type="text/javascript">
+          var disqus_shortname = 'elinep-github-hubpres'; // required: replace example with your forum shortname
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </section>
+    
+    </article>
+
+</main>
+    <footer class="animated fadeIn" id="footer">
+        <section class="colophon">
+          <section class="copyright">Copyright &copy; <span itemprop="copyrightHolder"></span>. <span rel="license">All Rights Reserved</span>.</section>
+          <section class="poweredby">Published with <a class="icon-ghost" href="http://hubpress.io">HubPress</a></section>
+        </section>
+        <section class="bottom">
+          <section class="attribution">
+            <a href="http://github.com/Reedyn/Saga">Built with <i class="fa fa-heart"></i> and Free and Open-Source Software</a>.
+          </section>
+        </section>
+    </footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js?v="></script> 
+      <script type="text/javascript">
+        jQuery( document ).ready(function() {
+          // change date with ago
+          jQuery('ago.ago').each(function(){
+            var element = jQuery(this).parent();
+            element.html( moment(element.text()).fromNow());
+          });
+        });
+
+        hljs.initHighlightingOnLoad();
+      </script>
+       
+    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+    <script src="//elinep.github.io/blog/themes/saga/assets/js/scripts.js?v=1498129369717"></script>
+    
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-100931138-1', 'auto');
+    ga('send', 'pageview');
+
+    </script>
+</body>
+</html>
