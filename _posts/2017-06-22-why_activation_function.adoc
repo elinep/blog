@@ -12,8 +12,8 @@
 = Why an activation function ?
 
 A quick explanation why a neural network with several layers and no activation
-function is useless. This might sound trivial but I'm sure did ask yourself first
-time you heard about hidden layer.
+function is useless. This might sound trivial but I'm sure you did ask yourself
+first time you heard about hidden layer.
 
 == Without activation
 
