@@ -1,0 +1,94 @@
+:published_at: 2017-06-22
+:hp-tags: Blog, Neural network
+:hp-alt-title: why_activation_function
+:stem: latexmath
+// default image resource for local edition
+:imgdir: ./../images/2017-06-22-why_activation_function
+// uncomment for web publication
+:imgdir: 2017-06-22-why_activation_function
+
+:hp-image: https://elinep.github.io/blog/images/2017-06-22-why_activation_function/cover.jpg
+
+= Why an activation function ?
+
+A quick explanation why a neural network with several layers and no activation
+function is useless. This might sound trivial but I'm sure did ask yourself first
+time you heard about hidden layer.
+
+== Without activation
+
+Consider two layers of neurons. The first layer has stem:[n] neurons, the second
+layer has one neuron. The input data is the vector stem:[X], the intermediate
+result is the vector stem:[X_h] and the network output is the scalar stem:[y].
+Neuron's parameters in the first layer are stem:[W_{h_i}] and stem:[B_{h_i}].
+Neuron's parameters in the last layer are stem:[W] and stem:[B]. First layer
+neuron has stem:[m] inputs. There are stem:[n] neurons in the first layer.
+
+.A generic fully connected two layers network
+image::{imgdir}/fig1.png[align="center"]
+
+For each neuron in the first layer we have:
+[.text-center]
+stem:[x_{h_i} = X \cdot W_{h_i} + B_i]
+
+Let's put it in a matrix form:
+
+[.text-center]
+stem:[\mathbf{ X_h = X \cdot W_h + B_h }]
+
+stem:[W_h = \begin{bmatrix} W_{h_0} \\ W_{h_1} \\ ... \\ W_{h_n} \end{bmatrix}]
+is the stem:[m \times n] matrix holding the weights of the first layer,
+stem:[B_h = \begin{bmatrix} B_{h_0} \\ B_{h_1} \\ ... \\ B_{h_n} \end{bmatrix}]
+is a stem:[n]-vector holding the bias. Similarly stem:[X] is the input
+stem:[m]-vector and stem:[X_h] is the first layer output stem:[n]-vector
+
+The output neuron computes:
+
+[.text-center]
+stem:[y = W \cdot X_h  + B]
+
+By composing the two layers, we have:
+
+[.text-center]
+stem:[y = W \cdot ( W_h \cdot X + B_h ) + B]
+
+By expansing, we get:
+
+[.text-center]
+stem:[y = W \cdot W_h \cdot X + W \cdot B_h + B]
+
+Which matches the definition of a single neuron:
+
+[.text-center]
+stem:[\mathbf{y = W' \cdot X + B'}]
+
+with stem:[W' = W \cdot W_h] and
+stem:[B' = W \cdot B_h + B]
+
+.The 2 layers network is equivalent to a single neuron
+image::{imgdir}/fig2.png[align="center"]
+
+Recursively we can reduce any stem:[N]-layers model to a single neuron.
+We start with the terminal neuron of the network (layer stem:[N]) and its input
+(layer stem:[N-1]). We then replace the terminal neuron and layer stem:[N-1]
+by the equivalent single neuron. By repeating this operation you end up with a
+single neuron.
+
+== With activation
+
+Let's see what happens when we introduce an activation function. Each scalar output
+of the first layer is transformed before entering last neuron.
+
+.A generic fully connected two layers network with activation function
+image::{imgdir}/fig3.png[align="center"]
+
+When we compose all transformations we obtain:
+
+[.text-center]
+stem:[y = W \cdot F_{activation}( W_h \cdot X + B_h ) + B]
+
+Now we're stuck, we can't develop this expression as we did before unless the activation
+function is a simple linear transform like stem:[f(x) = ax+b] but it is purposely
+non linear. With non linear activation functions we can't simplify the network anymore.
+Thanks to the activation function, at least one hidden layer can be justified when
+arbitrary non linear transformations must be learned by the network.
